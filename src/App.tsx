@@ -293,9 +293,9 @@ export function App() {
   };
 
   return (
-    <div className="min-h-[100dvh] bg-slate-950 text-slate-100 flex flex-col">
+    <div className="h-[100dvh] overflow-hidden bg-slate-950 text-slate-100 flex flex-col">
       {/* Header fixo */}
-      <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md pt-[env(safe-area-inset-top)]">
+      <header className="shrink-0 z-30 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md pt-[env(safe-area-inset-top)]">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
             <img src="/icon.svg" alt="QuickTrello" className="h-9 w-9 rounded-xl shadow" />
@@ -336,7 +336,7 @@ export function App() {
       </header>
 
       {/* Conteúdo principal */}
-      <main className="mx-auto w-full max-w-lg flex-1 px-4 py-4 space-y-3.5 pb-10">
+      <main className="mx-auto w-full max-w-lg flex-1 overflow-y-auto overscroll-contain px-4 py-4 space-y-3.5 pb-12">
         {/* Banner de configuração pendente */}
         {(!isTrelloReady || !isGeminiReady) && (
           <button
@@ -414,6 +414,12 @@ export function App() {
             value={text}
             onChange={(e) => setText(e.target.value)}
             onPaste={handlePaste}
+            onFocus={(e) => {
+              const target = e.currentTarget;
+              window.setTimeout(() => {
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              }, 250);
+            }}
             disabled={isGenerating || isCreating}
             placeholder="Digite um resumo, link ou complemente o áudio/foto... (Ctrl+V cola print)"
             className="w-full rounded-xl border border-slate-800 bg-slate-950/90 px-3.5 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 focus:border-sky-500 focus:outline-none resize-y"
