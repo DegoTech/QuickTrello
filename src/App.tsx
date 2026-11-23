@@ -295,7 +295,7 @@ export function App() {
   return (
     <div className="min-h-[100dvh] bg-slate-950 text-slate-100 flex flex-col">
       {/* Header fixo */}
-      <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md">
+      <header className="sticky top-0 z-30 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md pt-[env(safe-area-inset-top)]">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
           <div className="flex items-center gap-2.5">
             <img src="/icon.svg" alt="QuickTrello" className="h-9 w-9 rounded-xl shadow" />
