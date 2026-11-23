@@ -1,7 +1,11 @@
-import { useRef, useState } from 'react';
+import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import { Camera, Image as ImageIcon, Info, Trash2 } from 'lucide-react';
 import type { CompressedImage } from '../types';
 import { compressImage } from '../utils/media';
+
+export interface ImagePickerHandle {
+  openCamera: () => void;
+}
 
 interface ImagePickerProps {
   image: CompressedImage | null;
@@ -9,11 +13,20 @@ interface ImagePickerProps {
   disabled?: boolean;
 }
 
-export function ImagePicker({ image, onChange, disabled = false }: ImagePickerProps) {
-  const cameraInputRef = useRef<HTMLInputElement | null>(null);
-  const galleryInputRef = useRef<HTMLInputElement | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export const ImagePicker = forwardRef<ImagePickerHandle, ImagePickerProps>(
+  function ImagePicker({ image, onChange, disabled = false }, ref) {
+    const cameraInputRef = useRef<HTMLInputElement | null>(null);
+    const galleryInputRef = useRef<HTMLInputElement | null>(null);
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    useImperativeHandle(ref, () => ({
+      openCamera: () => {
+        if (!disabled && !isProcessing) {
+          cameraInputRef.current?.click();
+        }
+      },
+    }));
 
   const handleFile = async (file?: File) => {
     if (!file) return;
@@ -125,4 +138,4 @@ export function ImagePicker({ image, onChange, disabled = false }: ImagePickerPr
       )}
     </div>
   );
-}
+});

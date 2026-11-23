@@ -1,7 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Mic, Square, Trash2, Volume2 } from 'lucide-react';
 import type { RecordedAudio } from '../types';
 import { blobToBase64, formatDuration } from '../utils/media';
+
+export interface AudioRecorderHandle {
+  startRecording: () => void;
+}
 
 interface AudioRecorderProps {
   audio: RecordedAudio | null;
@@ -26,7 +30,8 @@ function getSupportedMimeType(): string {
   return '';
 }
 
-export function AudioRecorder({ audio, onChange, disabled = false }: AudioRecorderProps) {
+export const AudioRecorder = forwardRef<AudioRecorderHandle, AudioRecorderProps>(
+  function AudioRecorder({ audio, onChange, disabled = false }, ref) {
   const [isRecording, setIsRecording] = useState(false);
   const [elapsedSec, setElapsedSec] = useState(0);
   const [error, setError] = useState<string | null>(null);
@@ -139,6 +144,14 @@ export function AudioRecorder({ audio, onChange, disabled = false }: AudioRecord
     }
   };
 
+  useImperativeHandle(ref, () => ({
+    startRecording: () => {
+      if (!isRecording && !audio) {
+        void startRecording();
+      }
+    },
+  }));
+
   const stopRecording = () => {
     if (!isRecording || !mediaRecorderRef.current) return;
     if (timerRef.current) {
@@ -239,4 +252,4 @@ export function AudioRecorder({ audio, onChange, disabled = false }: AudioRecord
       )}
     </div>
   );
-}
+});

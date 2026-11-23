@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   AlertCircle,
   CheckCircle2,
@@ -10,8 +10,8 @@ import {
   Sparkles,
   Zap,
 } from 'lucide-react';
-import { AudioRecorder } from './components/AudioRecorder';
-import { ImagePicker } from './components/ImagePicker';
+import { AudioRecorder, type AudioRecorderHandle } from './components/AudioRecorder';
+import { ImagePicker, type ImagePickerHandle } from './components/ImagePicker';
 import { ReviewModal } from './components/ReviewModal';
 import { SettingsModal } from './components/SettingsModal';
 import { DEFAULT_SETTINGS, STORAGE_KEYS, TRELLO_COLOR_MAP } from './constants';
@@ -74,6 +74,45 @@ export function App() {
   const [successCard, setSuccessCard] = useState<{ title: string; shortUrl: string } | null>(
     null
   );
+
+  const audioRecorderRef = useRef<AudioRecorderHandle | null>(null);
+  const imagePickerRef = useRef<ImagePickerHandle | null>(null);
+  const noteInputRef = useRef<HTMLTextAreaElement | null>(null);
+
+  useEffect(() => {
+    const triggerWidgetAction = (action?: string | null) => {
+      if (!action) return;
+      (window as { __QUICKTRELLO_PENDING_ACTION__?: string | null }).__QUICKTRELLO_PENDING_ACTION__ =
+        null;
+
+      window.setTimeout(() => {
+        if (action === 'audio') {
+          audioRecorderRef.current?.startRecording();
+        } else if (action === 'photo') {
+          imagePickerRef.current?.openCamera();
+        } else if (action === 'text') {
+          noteInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          noteInputRef.current?.focus();
+        }
+      }, 120);
+    };
+
+    const pending = (window as { __QUICKTRELLO_PENDING_ACTION__?: string | null })
+      .__QUICKTRELLO_PENDING_ACTION__;
+    if (pending) {
+      triggerWidgetAction(pending);
+    }
+
+    const handleWidgetEvent = (event: Event) => {
+      const customEvent = event as CustomEvent<string>;
+      triggerWidgetAction(customEvent.detail);
+    };
+
+    window.addEventListener('quicktrello-widget-action', handleWidgetEvent);
+    return () => {
+      window.removeEventListener('quicktrello-widget-action', handleWidgetEvent);
+    };
+  }, []);
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
@@ -349,6 +388,7 @@ export function App() {
 
         {/* 1. Gravador de Áudio */}
         <AudioRecorder
+          ref={audioRecorderRef}
           audio={audio}
           onChange={setAudio}
           disabled={isGenerating || isCreating}
@@ -356,6 +396,7 @@ export function App() {
 
         {/* 2. Imagem / Print de Contexto */}
         <ImagePicker
+          ref={imagePickerRef}
           image={image}
           onChange={setImage}
           disabled={isGenerating || isCreating}
@@ -367,6 +408,7 @@ export function App() {
             Texto / Nota Rápida
           </label>
           <textarea
+            ref={noteInputRef}
             id="quick-note"
             rows={3}
             value={text}

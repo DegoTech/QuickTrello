@@ -4,4 +4,7 @@
     <string name="title_activity_main">QuickTrello</string>
     <string name="package_name">com.quicktrello.app</string>
     <string name="custom_url_scheme">com.quicktrello.app</string>
+    <string name="widget_audio_label">QuickTrello — Áudio</string>
+    <string name="widget_photo_label">QuickTrello — Foto</string>
+    <string name="widget_text_label">QuickTrello — Texto Rápido</string>
 </resources>

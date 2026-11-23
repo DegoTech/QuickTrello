@@ -33,6 +33,42 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"></meta-data>
         </provider>
+
+        <receiver
+            android:name=".QuickAudioWidget"
+            android:exported="true"
+            android:label="@string/widget_audio_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_audio_info" />
+        </receiver>
+
+        <receiver
+            android:name=".QuickPhotoWidget"
+            android:exported="true"
+            android:label="@string/widget_photo_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_photo_info" />
+        </receiver>
+
+        <receiver
+            android:name=".QuickTextWidget"
+            android:exported="true"
+            android:label="@string/widget_text_label">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_text_info" />
+        </receiver>
     </application>
 
     <!-- Permissions -->
