@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">QuickTrello</string>
+    <string name="title_activity_main">QuickTrello</string>
+    <string name="package_name">com.quicktrello.app</string>
+    <string name="custom_url_scheme">com.quicktrello.app</string>
+</resources>
