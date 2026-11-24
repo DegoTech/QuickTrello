@@ -74,6 +74,16 @@ export function App() {
   const [successCard, setSuccessCard] = useState<{ title: string; shortUrl: string } | null>(
     null
   );
+  const [viewportHeight, setViewportHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const updateHeight = () => setViewportHeight(vv.height);
+    updateHeight();
+    vv.addEventListener('resize', updateHeight);
+    return () => vv.removeEventListener('resize', updateHeight);
+  }, []);
 
   const audioRecorderRef = useRef<AudioRecorderHandle | null>(null);
   const imagePickerRef = useRef<ImagePickerHandle | null>(null);
@@ -293,7 +303,10 @@ export function App() {
   };
 
   return (
-    <div className="h-[100dvh] overflow-hidden bg-slate-950 text-slate-100 flex flex-col">
+    <div
+      className="h-[100dvh] overflow-hidden bg-slate-950 text-slate-100 flex flex-col"
+      style={viewportHeight ? { height: `${viewportHeight}px` } : undefined}
+    >
       {/* Header fixo */}
       <header className="shrink-0 z-30 border-b border-slate-800/80 bg-slate-950/90 backdrop-blur-md pt-[env(safe-area-inset-top)]">
         <div className="mx-auto flex max-w-lg items-center justify-between px-4 py-3">
